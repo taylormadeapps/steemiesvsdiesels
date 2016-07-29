@@ -38,12 +38,7 @@ RUN chmod -f 750 /etc/service/shellinabox/run.sh \
 	&& chgrp -f users /etc/service/shellinabox/run.sh
 
 
-# supervisord config
-RUN easy_install supervisor
-	
-ADD ./conf/supervisord.conf /etc/supervisord.conf
-ADD ./scripts/startup.sh /services/startup.sh
-RUN chmod 740 /services/startup.sh
+
 
 #now start building steem
 # taken from https://steemit.com/steemhelp/@joseph/mining-steem-for-dummies as of 29/07/2016
@@ -75,12 +70,24 @@ RUN cd ~ && \
 RUN cd ~ && \
 	git clone https://github.com/steemit/steem && \
   cd ~/steem && \
+	git checkout tags/v0.12.2 && \
 	git submodule update --init --recursive && \
 	cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONTENT_PATCHING=OFF -DLOW_MEMORY_NODE=ON && \
   make
 
+ADD ./scripts/supervisord-steemd.sh /etc/service/steemd/run.sh
+RUN chmod -f 750 /etc/service/steemd/run.sh \
+	&& chgrp -f users /etc/service/steemd/run.sh
 
-
+#/root/steem/programs/steemd/witness_node_data_dir/config.ini
+	
+# supervisord config
+RUN easy_install supervisor
+	
+ADD ./conf/supervisord.conf /etc/supervisord.conf
+ADD ./scripts/startup.sh /services/startup.sh
+RUN chmod 740 /services/startup.sh	
+	
 
 #clean up apt-get to finish the build process
 #RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

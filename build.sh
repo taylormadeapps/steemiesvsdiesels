@@ -1,4 +1,3 @@
 #!/bin/sh
-sudo docker build -t encircle/steemiesvsdiesels:latest .
+sudo docker build -t taylormadeapps/steemiesvsdiesels:latest .
 
-#./run.sh
