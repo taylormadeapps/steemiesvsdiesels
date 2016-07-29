@@ -1,1 +1,3 @@
-steemiesvsdiesels/conf/steemd/steemd.config.ini
+conf/steemd/steemd.config.ini
+conf/steemd/steemd.mine.config.ini
+keys/miningkey.pub

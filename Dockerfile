@@ -75,15 +75,18 @@ RUN cd ~ && \
 	cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONTENT_PATCHING=OFF -DLOW_MEMORY_NODE=ON && \
   make
 
+#add the steemd to our supervisor service runner
 ADD ./scripts/supervisord-steemd.sh /etc/service/steemd/run.sh
 RUN chmod -f 750 /etc/service/steemd/run.sh \
 	&& chgrp -f users /etc/service/steemd/run.sh
 
-#/root/steem/programs/steemd/witness_node_data_dir/config.ini
+#add our steemd config file
+ADD ./conf/steemd/steemd.config.ini /root/steem/programs/steemd/witness_node_data_dir/config.ini
+RUN chmod -f 700 /root/steem/programs/steemd/witness_node_data_dir/config.ini
+
 	
-# supervisord config
+# supervisord config - this is our serrvice runner
 RUN easy_install supervisor
-	
 ADD ./conf/supervisord.conf /etc/supervisord.conf
 ADD ./scripts/startup.sh /services/startup.sh
 RUN chmod 740 /services/startup.sh	
