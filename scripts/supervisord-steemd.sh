@@ -1,3 +1,3 @@
 #! /bin/bash
 
-~/steemd --rpc-endpoint
+~/steem/programs/steemd --rpc-endpoint

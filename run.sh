@@ -2,7 +2,7 @@
 set -x
 sudo docker run -d -m=0 \
   -p 0.0.0.0:2222:22 -\
-  --name=steemiesvsdiesels encircle/steemiesvsdiesels:latest
+  --name=steemiesvsdiesels taylormadeapps/steemiesvsdiesels:latest
 
 	#  -v /var/enactxms/enactdsa-test/tmp:/tmp \
 #  -v /var/enactxms/enactdsa-test/enactxms:/var/enactxms \
