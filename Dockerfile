@@ -4,16 +4,6 @@ MAINTAINER Encircle Solutions Ltd support@encircle.co.uk
 
 ENV HOME /root
 
-#set LOCAL Env vars
-ENV LANG en_GB.UTF-8
-ENV LC_ALL en_GB.UTF-8
-ENV LANGUAGE en_GB.UTF-8
-
-
-RUN LC_ALL=en_GB.UTF-8
-RUN LANG=en_GB.UTF-8
-RUN LANGUAGE=en_GB.UTF-8
-RUN DEBIAN_FRONTEND=noninteractive
 
 # Install modules from apt-get
 RUN	apt-get -y update
@@ -72,19 +62,22 @@ RUN cd ~ && \
 	./b2 install
 
 #build the bitcoin secp256k1 library dependency from git submodule repo
-COPY ./secp256k1/* /root/secp256k1/
-#RUN chmod -Rf 770 /root/secp256k1
-#RUN cd ~/secp256k1 && \
-#	./autogen.sh && \
-#	./configure && \
-#	make && \
-#	./tests
+RUN cd ~ && \
+	git clone https://github.com/bitcoin/secp256k1 && \
+	cd ~/secp256k1 && \
+	./autogen.sh && \
+	./configure && \
+	make && \
+	./tests
 
 #build the steem codebase from git submodule repo
 #ADD ./steem/ /root/steem/
-#RUN cd ~/steam && \
-#	cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONTENT_PATCHING=OFF -DLOW_MEMORY_NODE=ON && \
-#  make
+RUN cd ~ && \
+	git clone https://github.com/steemit/steem && \
+  cd ~/steem && \
+	git submodule update --init --recursive && \
+	cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONTENT_PATCHING=OFF -DLOW_MEMORY_NODE=ON && \
+  make
 
 
 

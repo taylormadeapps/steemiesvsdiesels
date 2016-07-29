@@ -1,6 +1,0 @@
-[submodule "secp256k1"]
-	path = secp256k1
-	url = https://github.com/bitcoin/secp256k1
-[submodule "steem"]
-	path = steem
-	url = https://github.com/steemit/steem

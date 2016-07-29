@@ -1,3 +1,4 @@
 docker stop steemiesvsdiesels
 
-docker rm encircle/steemiesvsdiesels:latest
+docker rm steemiesvsdiesels
+docker rmi taylormadeapps/steemiesvsdiesels:latest
