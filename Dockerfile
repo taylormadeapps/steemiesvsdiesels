@@ -18,7 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive
 # Install modules from apt-get
 RUN	apt-get -y update
 
-RUN	apt-get install -q -y openssh-server pwgen wget && \
+RUN	apt-get install -q -y openssh-server pwgen wget tar && \
 		apt-get install -q -y gcc g++ groff groff-base make python-setuptools &&\
 		apt-get install -q -y git cmake python-dev autotools-dev libicu-dev build-essential libbz2-dev libboost-all-dev libssl-dev libncurses5-dev doxygen libreadline-dev dh-autoreconf
 
@@ -55,11 +55,45 @@ ADD ./conf/supervisord.conf /etc/supervisord.conf
 ADD ./scripts/startup.sh /services/startup.sh
 RUN chmod 740 /services/startup.sh
 
-#clean up apt-get
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+#now start building steem
+# taken from https://steemit.com/steemhelp/@joseph/mining-steem-for-dummies as of 29/07/2016
+
+#add required git repos - these are submodules of our steemiesvsdiesels repo - might need to do do a git submodule update on the repo before this docker build i.e.:
+# git submodule update --init --recursive
 
 
-# To store the data outside the container, mount /var/lib/ldap as a data volume
+
+#download and build the boost library dependency
+RUN cd ~ && \
+	wget -O boost_1_60_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.60.0/boost_1_60_0.tar.gz/download && \
+	tar xzvf boost_1_60_0.tar.gz && \
+	cd boost_1_60_0 && \
+	./bootstrap.sh --prefix=/usr/local && \
+	./b2 install
+
+#build the bitcoin secp256k1 library dependency from git submodule repo
+COPY ./secp256k1/* /root/secp256k1/
+#RUN chmod -Rf 770 /root/secp256k1
+#RUN cd ~/secp256k1 && \
+#	./autogen.sh && \
+#	./configure && \
+#	make && \
+#	./tests
+
+#build the steem codebase from git submodule repo
+#ADD ./steem/ /root/steem/
+#RUN cd ~/steam && \
+#	cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_CONTENT_PATCHING=OFF -DLOW_MEMORY_NODE=ON && \
+#  make
+
+
+
+
+#clean up apt-get to finish the build process
+#RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+
 #VOLUME /tmp
 
 #sshd box 

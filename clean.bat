@@ -1,3 +1,3 @@
 docker stop steemiesvsdiesels
 
-docker rm steemiesvsdiesels
+docker rm encircle/steemiesvsdiesels:latest
